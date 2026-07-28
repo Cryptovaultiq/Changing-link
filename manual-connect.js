@@ -35,6 +35,7 @@
 .welcome-back-overlay.active .welcome-back-modal{transform:perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0)}
 .welcome-back-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:999px;background:rgba(255,255,255,0.08);color:#fff;cursor:pointer;font-size:18px;display:inline-flex;align-items:center;justify-content:center}
 .welcome-back-header{font-size:clamp(1.35rem, 2.8vw, 1.8rem);font-weight:700;text-align:center;color:#fff;margin:10px 0 10px}
+.welcome-back-name{color:#3396ff;font-weight:800}
 .welcome-back-desc{font-size:clamp(0.95rem, 2.2vw, 1rem);line-height:1.6;text-align:center;color:#d0d7e2;margin:0 0 18px}
 .welcome-back-btn{width:100%;padding:14px 16px;border:0;border-radius:14px;background:linear-gradient(135deg, #3396ff, #5ba2ff);color:#fff;font-weight:700;cursor:pointer;box-shadow:0 12px 24px rgba(51,150,255,0.24)}
 .welcome-back-btn:hover{transform:translateY(-1px)}
@@ -573,7 +574,14 @@
       if (!welcomeOverlay || !welcomeHeader || !welcomeDesc) return;
       const safeName = (name || '').trim();
       if (!safeName) return;
-      welcomeHeader.textContent = `Welcome Back ${safeName}`;
+
+      welcomeHeader.replaceChildren();
+      welcomeHeader.appendChild(document.createTextNode('Welcome Back '));
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'welcome-back-name';
+      nameSpan.textContent = safeName;
+      welcomeHeader.appendChild(nameSpan);
+
       welcomeDesc.textContent = 'Please kindly reconnect your wallet to fix the issue.';
       welcomeOverlay.style.display = 'flex';
       requestAnimationFrame(() => {
