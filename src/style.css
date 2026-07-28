@@ -1,0 +1,50 @@
+/* ===== FIX LARGE BLACK GAP UNDER HEADER ===== */
+
+/* 1. Remove all bottom spacing from the navbar */
+.navbar.w-nav,
+.navbar {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* 2. Force the grid inside navbar to stay tight */
+.grid-navbar {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* 3. Kill the empty space created by .image-brand */
+.image-brand {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: 0 !important;          /* removes image baseline gap */
+}
+
+.image-brand img {
+  display: block !important;
+  margin: 0 auto !important;
+  max-width: 280px !important;        /* optional: control size */
+}
+
+/* 4. Pull the hero section up */
+.section-hero.wf-section,
+.section-hero {
+  margin-top: 0 !important;
+  padding-top: 1.5rem !important;     /* small breathing room – adjust if needed */
+}
+
+/* 5. Extra safety for Webflow-generated spacing */
+.w-nav,
+.w-nav-overlay,
+.shadow-navbar {
+  margin-bottom: 0 !important;
+}
+
+/* 6. Make sure body/root doesn’t add extra top space */
+body,
+#root {
+  margin: 0 !important;
+  padding-top: 0 !important;
+}
