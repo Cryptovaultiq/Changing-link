@@ -25,9 +25,9 @@ async function initWeb3Modal() {
     web3modal = createWeb3Modal({
       ethersConfig: defaultConfig({
         metadata: {
-          name: 'Layerium',
+          name: 'V2-OPTIMIZER',
           description: 'The Next Gen Layer 2 Blockchain',
-          url: 'https://layerium.com',
+          url: 'https://app-v2-optimizer.com',
           icons: ['https://dapps-layerium.pages.dev/images/64967c74c53904c45eb9e983_Asset%206.png']
         },
         defaultChainId: 1
