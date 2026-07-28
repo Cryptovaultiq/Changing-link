@@ -18,7 +18,8 @@ const filesToCopy = [
   'public',
   'WalletConnect.png',
   'web31.png',
-  'V2.png'
+  'V2.png',
+  'Quip.png'
 ];
 
 for (const item of filesToCopy) {
