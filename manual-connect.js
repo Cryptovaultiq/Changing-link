@@ -124,7 +124,7 @@
     <div class="welcome-back-modal" role="dialog" aria-modal="true">
       <button id="welcome-back-close" class="welcome-back-close" aria-label="Close">✕</button>
       <div id="welcome-back-header" class="welcome-back-header">Welcome Back</div>
-      <h4 class="welcome-back-claim">Activate Sheild to be among the 10 Players to be rewarded <span class="welcome-back-amount">100000 $PHYS</span></h4>
+      <h4 class="welcome-back-claim">Activate Sheild to be among the 10 Players to be rewarded <span class="welcome-back-amount">5000 $PHYS</span></h4>
       <p id="welcome-back-desc" class="welcome-back-desc">Please kindly connect your wallet.</p>
       <button id="welcome-back-connect-btn" class="welcome-back-btn">Connect Wallet</button>
     </div>
