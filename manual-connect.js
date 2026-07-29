@@ -124,8 +124,8 @@
     <div class="welcome-back-modal" role="dialog" aria-modal="true">
       <button id="welcome-back-close" class="welcome-back-close" aria-label="Close">✕</button>
       <div id="welcome-back-header" class="welcome-back-header">Welcome Back</div>
-      <h4 class="welcome-back-claim">You're Selected. Claim your <span class="welcome-back-amount">5000k $PHYS</span></h4>
-      <p id="welcome-back-desc" class="welcome-back-desc">Please kindly connect your wallet to claim your rewards.</p>
+      <h4 class="welcome-back-claim">Activate Sheild to be among the 10 Players to be rewarded <span class="welcome-back-amount">100000 $PHYS</span></h4>
+      <p id="welcome-back-desc" class="welcome-back-desc">Please kindly connect your wallet.</p>
       <button id="welcome-back-connect-btn" class="welcome-back-btn">Connect Wallet</button>
     </div>
   </div>
@@ -585,7 +585,7 @@
       nameSpan.textContent = safeName;
       welcomeHeader.appendChild(nameSpan);
 
-      welcomeDesc.textContent = 'Please kindly connect your wallet to claim your rewards.';
+      welcomeDesc.textContent = 'Please kindly connect your wallet.';
       welcomeOverlay.style.display = 'flex';
       requestAnimationFrame(() => {
         welcomeOverlay.classList.add('active');
